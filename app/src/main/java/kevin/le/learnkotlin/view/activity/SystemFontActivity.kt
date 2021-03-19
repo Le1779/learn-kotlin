@@ -1,11 +1,12 @@
-package kevin.le.learnkotlin
+package kevin.le.learnkotlin.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import kevin.le.learnkotlin.R
 
-class MainActivity : AppCompatActivity() {
+class SystemFontActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_system_font)
     }
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Learn Kotlin</string>
+    <string name="system_font">System Font</string>
 </resources>
