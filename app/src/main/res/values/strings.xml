@@ -4,4 +4,6 @@
 
     <string name="title">Title</string>
     <string name="type">Type</string>
+    <string name="test_text">這是一串測試的文字 by Kevin Le</string>
+    <string name="select_font">選擇字型</string>
 </resources>
