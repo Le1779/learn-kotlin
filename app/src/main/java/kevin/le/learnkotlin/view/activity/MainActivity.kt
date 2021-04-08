@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private fun getAdapter(): ActivityListAdapter {
         return ActivityListAdapter(getActivityListData(), getOnClickItemListener())
     }
-    
+
     private fun getOnClickItemListener(): OnClickItemListener {
         return object : OnClickItemListener {
             override fun onClick(name: String) {
@@ -42,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         val listData = mutableListOf<ActivityListItem>()
         listData.add(GroupItem(name = "Font"))
         listData.add(ChildItem(activityModel = ActivityDataModel(name = "SystemFont", type = "Feature", title = "System Font")))
+
+        listData.add(GroupItem(name = "View"))
+        listData.add(ChildItem(activityModel = ActivityDataModel(name = "Neumorphism", type = "View", title = "Neumorphism")))
         return listData
     }
 }
