@@ -8,6 +8,19 @@
     android:padding="8dp"
     tools:context=".view.activity.NeumorphismActivity">
 
+    <kevin.le.learnkotlin.view.components.neumorphism.NeumorphismImageButton
+        style="@style/Widget.Neumorphism.Button"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_settings"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </kevin.le.learnkotlin.view.components.neumorphism.NeumorphismImageButton>
+
     <kevin.le.learnkotlin.view.components.neumorphism.NeumorphismButton
         style="@style/Widget.Neumorphism.Button"
         android:layout_width="wrap_content"
