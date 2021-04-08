@@ -15,7 +15,7 @@ class NeumorphismImageButton(
 
     init {
         drawable.corner = Corner.CIRCLE
-        setBackgroundDrawable(drawable)
+        background = drawable
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

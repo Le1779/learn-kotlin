@@ -17,7 +17,7 @@ class NeumorphismButton(
     private val drawable: NeumorphismDrawable = NeumorphismDrawable(context)
 
     init {
-        setBackgroundDrawable(drawable)
+        background = drawable
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
