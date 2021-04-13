@@ -8,9 +8,17 @@ import kevin.le.learnkotlin.model.BlurProvider
 import kotlin.math.min
 
 abstract class Shadow(
-        private val context: Context,
-        var shadowSize: Int = 25
+        private val context: Context
 ) {
+    var shadowSize: Int = 25
+        set(value) {
+            if (value == shadowSize) {
+                return
+            }
+
+            field = value
+            regenerate()
+        }
 
     var corner: Corner = Corner.ROUNDED
         set(value) {
@@ -18,8 +26,8 @@ abstract class Shadow(
                 return
             }
 
-            regenerate()
             field = value
+            regenerate()
         }
 
     var radius: Float = corner.radius
@@ -28,8 +36,8 @@ abstract class Shadow(
                 return
             }
 
-            regenerate()
             field = value
+            regenerate()
         }
 
     var bounds: Rect = Rect(0, 0, 1, 1)

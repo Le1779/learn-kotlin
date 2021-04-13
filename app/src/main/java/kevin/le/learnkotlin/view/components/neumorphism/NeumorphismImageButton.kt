@@ -11,7 +11,7 @@ class NeumorphismImageButton(
         context: Context,
         attrs: AttributeSet? = null
 ): AppCompatImageButton(context, attrs) {
-    private val drawable: NeumorphismDrawable = NeumorphismDrawable(context)
+    val drawable: NeumorphismDrawable = NeumorphismDrawable(context)
 
     init {
         drawable.corner = Corner.CIRCLE

@@ -27,7 +27,7 @@
         style="@style/Widget.Neumorphism.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="This is Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,13 +36,12 @@
     </kevin.le.learnkotlin.view.components.neumorphism.NeumorphismButton>
 
     <kevin.le.learnkotlin.view.components.neumorphism.NeumorphismConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/neumorphismConstraintLayout"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/neumorphismButton">
@@ -58,5 +57,30 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </kevin.le.learnkotlin.view.components.neumorphism.NeumorphismConstraintLayout>
+
+    <kevin.le.learnkotlin.view.components.neumorphism.NeumorphismImageButton
+        android:id="@+id/imageButton"
+        style="@style/Widget.Neumorphism.Button"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/ic_settings"
+        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/neumorphismConstraintLayout" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:max="25"
+        android:progress="25"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

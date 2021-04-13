@@ -13,18 +13,35 @@ class NeumorphismDrawable(context: Context) : Drawable() {
 
     var state: State = State.UP
         set(value) {
-            invalidateSelf()
             field = value
+            invalidateSelf()
         }
 
     var corner: Corner = Corner.ROUNDED
         set(value) {
             outerShadow.corner = value
             innerShadow.corner = value
-            invalidateSelf()
             field = value
+            invalidateSelf()
         }
-    private var shadowSize: Int = 35
+
+    var shadowPadding: Int = 35
+        set(value) {
+            field = value
+            invalidateSelf()
+        }
+
+    var shadowSize: Int = 25
+        set(value) {
+            shadowPadding = value + 10
+            outerShadow.centerLayerPath = layerPath
+            innerShadow.centerLayerPath = layerPath
+            outerShadow.shadowSize = value
+            innerShadow.shadowSize = value
+            field = value
+            invalidateSelf()
+        }
+
     private var outerShadow: OuterShadow = OuterShadow(context)
     private var innerShadow: InnerShadow = InnerShadow(context)
     private var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -72,11 +89,13 @@ class NeumorphismDrawable(context: Context) : Drawable() {
         outerShadow.corner = corner
         outerShadow.radius = corner.radius
         outerShadow.bounds = this.bounds
+        outerShadow.shadowSize = shadowSize
 
         innerShadow.centerLayerPath = layerPath
         innerShadow.corner = corner
         innerShadow.radius = corner.radius
         innerShadow.bounds = this.bounds
+        innerShadow.shadowSize = shadowSize
         invalidateSelf()
     }
 
@@ -90,10 +109,10 @@ class NeumorphismDrawable(context: Context) : Drawable() {
     private val layerPath: Path
         get() {
             val path = Path()
-            val left = shadowSize.toFloat()
-            val top = shadowSize.toFloat()
-            val right = this.bounds.width().toFloat() - shadowSize
-            val bottom = this.bounds.height().toFloat() - shadowSize
+            val left = shadowPadding.toFloat()
+            val top = shadowPadding.toFloat()
+            val right = this.bounds.width().toFloat() - shadowPadding
+            val bottom = this.bounds.height().toFloat() - shadowPadding
             val radius = getCornerRadius()
             path.addRoundRect(
                     left,
