@@ -10,7 +10,7 @@ class NeumorphismConstraintLayout(
         attrs: AttributeSet? = null
 ): ConstraintLayout(context, attrs) {
 
-    private val drawable: NeumorphismDrawable = NeumorphismDrawable(context)
+    val drawable: NeumorphismDrawable = NeumorphismDrawable(context)
 
     init {
         drawable.state = State.DOWN

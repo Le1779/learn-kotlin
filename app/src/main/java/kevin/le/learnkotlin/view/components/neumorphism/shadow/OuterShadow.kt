@@ -7,12 +7,15 @@ import android.graphics.Region
 import android.os.Build
 
 class OuterShadow(context: Context) : Shadow(context) {
+
     override fun getDarkShadowBounds(): Rect {
-        return Rect(shadowSize*2, shadowSize*2, bounds.right - shadowSize, bounds.bottom - shadowSize)
+        val shadowPadding: Int = (shadowSize * 0.6).toInt()
+        return Rect(shadowPadding*2, shadowPadding*2, bounds.right - shadowPadding, bounds.bottom - shadowPadding)
     }
 
     override fun getLightShadowBounds(): Rect {
-        return Rect(shadowSize, shadowSize, bounds.right - shadowSize*2, bounds.bottom - shadowSize*2)
+        val shadowPadding: Int = (shadowSize * 0.6).toInt()
+        return Rect(shadowPadding, shadowPadding, bounds.right - shadowPadding*2, bounds.bottom - shadowPadding*2)
     }
 
     override fun clipCanvas(canvas: Canvas) {

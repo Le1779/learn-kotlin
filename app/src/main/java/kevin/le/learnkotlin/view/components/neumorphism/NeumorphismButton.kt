@@ -14,7 +14,7 @@ class NeumorphismButton(
         attrs: AttributeSet? = null
 ): AppCompatButton(context, attrs) {
 
-    private val drawable: NeumorphismDrawable = NeumorphismDrawable(context)
+    val drawable: NeumorphismDrawable = NeumorphismDrawable(context)
 
     init {
         background = drawable

@@ -25,7 +25,7 @@ class NeumorphismDrawable(context: Context) : Drawable() {
             invalidateSelf()
         }
 
-    var shadowPadding: Int = 35
+    var shadowPadding: Int = 22
         set(value) {
             field = value
             invalidateSelf()
