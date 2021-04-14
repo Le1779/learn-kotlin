@@ -5,246 +5,138 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import kevin.le.learnkotlin.model.BlurProvider
+import kotlin.math.min
+import kotlin.math.roundToInt
 
-class BrightAndKelvinTouchpad : View {
-    private var isEnable = false
-    private var bright = 0.5f
-    private var temperature = 0.5f
-    private var callback: Callback? = null
+class BrightAndKelvinTouchpad(
+    context: Context,
+    attrs: AttributeSet? = null
+) : View(context, attrs) {
 
-    interface Callback {
-        fun onDataChange(bright: Float, temperature: Float)
-    }
+    var bright = 0.6f
+    var kelvin = 0.4f
+    var radius = 10f
+    var offset = 5f
+    private var bounds = RectF(0f, 0f, 0f, 0f)
+    private var brightRect = RectF(0f, 0f, 0f, 0f)
+    private var kelvinRect = RectF(0f, 0f, 0f, 0f)
+    private var brightCenter = PointF(0f, 0f)
+    private var kelvinCenter = PointF(0f, 0f)
+    private var brightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var kelvinPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var mainPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
-    fun setEnable(enable: Boolean) {
-        isEnable = enable
-        invalidate()
-    }
-
-    fun setBright(bright: Float) {
-        this.bright = 1 - bright
-        invalidate()
-    }
-
-    fun setTemperature(temperature: Float) {
-        this.temperature = temperature
-        invalidate()
-    }
-
-    private var viewHeight = 0
-    private var viewWidth = 0
-    private var widthMargin = 0f
-    private var heightMargin = 0f
-    private var viewRadius = 0f
-    private var backgroundRect: RectF? = null
-    private var backgroundPaint: Paint? = null
-    private var backgroundRadius = 0f
-    private val backgroundBitmap: Bitmap? = null
-    private var touchPoint: PointF? = null
-    private var controlRadius = 0f
-    private var controlPoint: PointF? = null
-    private var controlPaint: Paint? = null
-    private var shadowPaint: Paint? = null
-    private var shadowBitmap: Bitmap? = null
-    private var glowPaint: Paint? = null
-    private var leftGlowBitmap: Bitmap? = null
-    private var rightGlowBitmap: Bitmap? = null
-    private var leftGlowRect: RectF? = null
-    private var rightGlowRect: RectF? = null
-
-    constructor(context: Context?) : super(context) {
-        init()
-    }
-
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
-        init()
-    }
-
-    fun setCallback(callback: Callback?) {
-        this.callback = callback
+    override fun draw(canvas: Canvas) {
+        super.draw(canvas)
+        canvas.clipPath(layerPath)
+        canvas.drawBitmap(generateBlurBitmap(), 0f, 0f, null)
+        canvas.drawPath(layerPath, mainPaint)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        viewHeight = measuredHeight
-        viewWidth = measuredWidth
-        resize()
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        drawShadow(canvas)
-        drawGlow(canvas)
-        drawBackground(canvas)
-        if (isEnable) {
-            drawPoint(canvas)
-        }
+        bounds.right = measuredWidth.toFloat()
+        bounds.bottom = measuredHeight.toFloat()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (!isEnable) {
-            return true
-        }
         val x = event.x.toInt()
         val y = event.y.toInt()
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                touchPoint!!.x = x.toFloat()
-                touchPoint!!.y = y.toFloat()
-            }
-            MotionEvent.ACTION_UP -> {
-            }
             MotionEvent.ACTION_MOVE -> {
-                temperature += (x - touchPoint!!.x) / 5f / viewRadius * 2f
-                bright += (y - touchPoint!!.y) / 5f / viewRadius * 2f
-                if (temperature < 0f) {
-                    temperature = 0f
+                if (x < 0.0 || x > bounds.width()) {
+                    return true
                 }
-                if (temperature > 1f) {
-                    temperature = 1f
+
+                if (y < 0.0 || y > bounds.height()) {
+                    return true
                 }
-                if (bright < 0f) {
-                    bright = 0f
-                }
-                if (bright > 1f) {
-                    bright = 1f
-                }
-                if (callback != null) {
-                    callback!!.onDataChange(1 - bright, temperature)
-                }
-                touchPoint!!.x = x.toFloat()
-                touchPoint!!.y = y.toFloat()
-                setLeftGlowRect()
-                setRightGlowRect()
-                setLeftGlowBitmap()
-                setRightGlowBitmap()
+
+                bright = x/bounds.width()
+                kelvin = 1 - y/bounds.height()
                 invalidate()
             }
         }
-        performClick()
+
         return true
     }
 
-    override fun performClick(): Boolean {
-        return super.performClick()
+    private fun updateBrightShape() {
+        brightCenter.y = bounds.centerY()
+        brightCenter.x = bounds.centerX() - bounds.width()/offset*(1 - bright)
+        val width = (bounds.width() * bright).roundToInt()
+        val height = (bounds.height() * bright).roundToInt()
+        brightRect.left = brightCenter.x - width/2
+        brightRect.top = brightCenter.y - height/2
+        brightRect.right = brightCenter.x + width/2
+        brightRect.bottom = brightCenter.y + height/2
     }
 
-    private fun init() {
-        backgroundRect = RectF()
-        backgroundPaint = Paint()
-        backgroundPaint!!.color = Color.argb(25, 255, 255, 255)
-        controlPaint = Paint()
-        controlPaint!!.style = Paint.Style.STROKE
-        controlPaint!!.color = Color.WHITE
-        controlPoint = PointF()
-        touchPoint = PointF()
-        shadowPaint = Paint()
-        glowPaint = Paint()
-        leftGlowRect = RectF()
-        rightGlowRect = RectF()
+    private fun updateKelvinShape() {
+        kelvinCenter.y = bounds.centerY()
+        kelvinCenter.x = bounds.centerX() + bounds.width()/offset*(1 - kelvin)
+        val width = (bounds.width() * kelvin).roundToInt()
+        val height = (bounds.height() * kelvin).roundToInt()
+        kelvinRect.left = kelvinCenter.x - width/2
+        kelvinRect.top = kelvinCenter.y - height/2
+        kelvinRect.right = kelvinCenter.x + width/2
+        kelvinRect.bottom = kelvinCenter.y + height/2
     }
 
-    private fun resize() {
-        widthMargin = viewWidth * 0.05f
-        heightMargin = viewHeight * 0.1f
-        viewRadius =
-            if (viewHeight < viewWidth) viewHeight / 2f - heightMargin else viewWidth / 2f - widthMargin
-        controlPoint!!.x = viewWidth / 2f
-        controlPoint!!.y = viewHeight / 2f
-        controlRadius = viewRadius / 30f
-        controlPaint!!.strokeWidth = controlRadius / 5f
-        backgroundRadius = viewWidth * 0.05f
-        setBackgroundRect()
-        setLeftGlowRect()
-        setRightGlowRect()
-        setShadowBitmap()
-        setLeftGlowBitmap()
-        setRightGlowBitmap()
-    }
-
-    private fun setBackgroundRect() {
-        backgroundRect!!.top = heightMargin
-        backgroundRect!!.bottom = viewHeight - heightMargin
-        backgroundRect!!.left = viewWidth / 2f - viewRadius
-        backgroundRect!!.right = viewWidth / 2f + viewRadius
-    }
-
-    private fun setLeftGlowRect() {
-        val n = backgroundRadius / 2 * temperature
-        leftGlowRect!!.top = heightMargin - n
-        leftGlowRect!!.bottom = viewHeight - heightMargin + n
-        leftGlowRect!!.left = viewWidth / 2f - viewRadius - n
-        leftGlowRect!!.right =
-            leftGlowRect!!.left + (viewRadius * 2 - backgroundRadius * 3) * temperature + backgroundRadius * 2 + n
-    }
-
-    private fun setRightGlowRect() {
-        val n = backgroundRadius / 2 * (1 - temperature)
-        rightGlowRect!!.top = heightMargin - n
-        rightGlowRect!!.bottom = viewHeight - heightMargin + n
-        rightGlowRect!!.right = viewWidth / 2f + viewRadius + n
-        rightGlowRect!!.left =
-            rightGlowRect!!.right - (viewRadius * 2 - backgroundRadius * 3) * (1 - temperature) - backgroundRadius * 2 - n
-    }
-
-    private fun drawBackground(canvas: Canvas) {
-        //canvas.drawCircle(viewWidth/2f, viewHeight/2f, viewRadius, backgroundPaint);
-        canvas.drawRoundRect(
-            backgroundRect!!,
-            backgroundRadius,
-            backgroundRadius,
-            backgroundPaint!!
+    private fun generateBlurBitmap(): Bitmap {
+        updateBrightShape()
+        updateKelvinShape()
+        var bitmap = Bitmap.createBitmap(
+            this.bounds.width().toInt(),
+            this.bounds.height().toInt(),
+            Bitmap.Config.ARGB_8888
         )
+
+        val canvas = Canvas(bitmap)
+        canvas.drawRoundRect(brightRect, radius, radius, brightPaint)
+        canvas.drawRoundRect(kelvinRect, radius, radius, kelvinPaint)
+
+        val scale = 0.1f
+        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.width * scale).roundToInt(), (bitmap.height * scale).roundToInt(), true)
+        bitmap = BlurProvider.blur(context, bitmap)
+        bitmap = Bitmap.createScaledBitmap(bitmap, (bitmap.width / scale).roundToInt(), (bitmap.height / scale).roundToInt(), true)
+        return bitmap
     }
 
-    private fun drawPoint(canvas: Canvas) {
-        controlPoint!!.x = viewWidth / 2f - viewRadius + viewRadius * 2f * temperature
-        controlPoint!!.y = heightMargin + viewRadius * 2f * bright
-        canvas.drawCircle(controlPoint!!.x, controlPoint!!.y, controlRadius, controlPaint!!)
-    }
+    private val cornerRadius: Float
+        get() {
+            return min(
+                bounds.width() / radius,
+                bounds.height() / radius
+            )
+        }
 
-    private fun drawShadow(canvas: Canvas) {
-        canvas.drawBitmap(shadowBitmap!!, 0f, 0f, shadowPaint)
-    }
+    private val layerPath: Path
+        get() {
+            val path = Path()
+            val left = 0f
+            val top = 0f
+            val right = this.bounds.width()
+            val bottom = this.bounds.height()
+            val radius = cornerRadius
+            path.addRoundRect(
+                left,
+                top,
+                right,
+                bottom,
+                radius,
+                radius,
+                Path.Direction.CW
+            )
+            path.close()
+            return path
+        }
 
-    private fun drawGlow(canvas: Canvas) {
-        canvas.drawBitmap(leftGlowBitmap!!, 0f, 0f, glowPaint)
-        canvas.drawBitmap(rightGlowBitmap!!, 0f, 0f, glowPaint)
-    }
-
-    private fun setShadowBitmap() {
-        shadowBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(shadowBitmap!!)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.setShadowLayer(widthMargin, 0f, widthMargin / 2, Color.argb(50, 0, 0, 0))
-        paint.color = Color.argb(255, 255, 255, 255)
-        canvas.drawRoundRect(backgroundRect!!, backgroundRadius, backgroundRadius, paint)
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        paint.setShadowLayer(0f, 0f, 0f, 0x00000000)
-        canvas.drawRoundRect(backgroundRect!!, backgroundRadius, backgroundRadius, paint)
-    }
-
-    private fun setLeftGlowBitmap() {
-        leftGlowBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(leftGlowBitmap!!)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.setShadowLayer(widthMargin * (1 - bright + 0.1f), 0f, 0f, -0xf55a6)
-        paint.color = -0xf55a6
-        canvas.drawRoundRect(leftGlowRect!!, backgroundRadius, backgroundRadius, paint)
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        paint.setShadowLayer(0f, 0f, 0f, 0x00000000)
-        canvas.drawRoundRect(backgroundRect!!, backgroundRadius, backgroundRadius, paint)
-    }
-
-    private fun setRightGlowBitmap() {
-        rightGlowBitmap = Bitmap.createBitmap(viewWidth, viewHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(rightGlowBitmap!!)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-        paint.setShadowLayer(widthMargin * (1 - bright + 0.1f), 0f, 0f, -0x1)
-        paint.color = -0x1
-        canvas.drawRoundRect(rightGlowRect!!, backgroundRadius, backgroundRadius, paint)
-        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-        paint.setShadowLayer(0f, 0f, 0f, 0x00000000)
-        canvas.drawRoundRect(backgroundRect!!, backgroundRadius, backgroundRadius, paint)
+    init {
+        mainPaint.color = Color.WHITE
+        mainPaint.alpha = 85
+        brightPaint.color = Color.WHITE
+        kelvinPaint.color = Color.rgb(255, 100, 0)
     }
 }
