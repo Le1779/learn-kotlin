@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         listData.add(GroupItem(name = "View"))
         listData.add(ChildItem(activityModel = ActivityDataModel(name = "Neumorphism", type = "View", title = "Neumorphism")))
+        listData.add(ChildItem(activityModel = ActivityDataModel(name = "Touchpad", type = "View", title = "Touchpad")))
         return listData
     }
 }
