@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#C8C8C8"
     tools:context=".view.activity.TouchpadActivity">
 
     <kevin.le.learnkotlin.view.components.touchpad.BrightAndKelvinTouchpad
@@ -15,6 +16,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_max="wrap"
-        app:layout_constraintWidth_percent="0.5" />
+        app:layout_constraintWidth_percent="0.7" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
