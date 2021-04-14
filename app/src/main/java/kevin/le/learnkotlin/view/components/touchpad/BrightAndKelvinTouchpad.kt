@@ -5,6 +5,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import kevin.le.learnkotlin.R
 import kevin.le.learnkotlin.model.BlurProvider
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -26,6 +27,18 @@ class BrightAndKelvinTouchpad(
     private var brightPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var kelvinPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private var mainPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    init {
+        val a = context.obtainStyledAttributes(
+            attrs, R.styleable.BrightAndKelvinTouchpad
+        )
+
+        radius = a.getDimension(R.styleable.BrightAndKelvinTouchpad_touchpad_corner_radius, radius)
+
+        mainPaint.color = a.getColor(R.styleable.BrightAndKelvinTouchpad_touchpad_color, Color.argb(85, 255, 255, 255))
+        brightPaint.color = Color.WHITE
+        kelvinPaint.color = Color.rgb(255, 100, 0)
+    }
 
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
@@ -132,11 +145,4 @@ class BrightAndKelvinTouchpad(
             path.close()
             return path
         }
-
-    init {
-        mainPaint.color = Color.WHITE
-        mainPaint.alpha = 85
-        brightPaint.color = Color.WHITE
-        kelvinPaint.color = Color.rgb(255, 100, 0)
-    }
 }

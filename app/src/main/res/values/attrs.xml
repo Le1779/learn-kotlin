@@ -17,4 +17,12 @@
         <attr name="neumorphism_corner" />
         <attr name="neumorphism_corner_radius" />
     </declare-styleable>
+
+
+    <attr name="touchpad_corner_radius" format="dimension" />
+    <attr name="touchpad_color" format="color" />
+    <declare-styleable name="BrightAndKelvinTouchpad">
+        <attr name="touchpad_corner_radius" />
+        <attr name="touchpad_color" />
+    </declare-styleable>
 </resources>
