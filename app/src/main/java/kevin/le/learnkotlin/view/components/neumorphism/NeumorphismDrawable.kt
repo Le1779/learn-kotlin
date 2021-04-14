@@ -14,32 +14,32 @@ class NeumorphismDrawable(context: Context) : Drawable() {
     var state: State = State.UP
         set(value) {
             field = value
-            invalidateSelf()
+            update()
         }
 
     var corner: Corner = Corner.ROUNDED
         set(value) {
-            outerShadow.corner = value
-            innerShadow.corner = value
             field = value
-            invalidateSelf()
+            update()
+        }
+
+    var radius: Float = corner.radius
+        set(value) {
+            field = value
+            update()
         }
 
     var shadowPadding: Int = 22
         set(value) {
             field = value
-            invalidateSelf()
+            update()
         }
 
     var shadowSize: Int = 25
         set(value) {
             shadowPadding = value + 10
-            outerShadow.centerLayerPath = layerPath
-            innerShadow.centerLayerPath = layerPath
-            outerShadow.shadowSize = value
-            innerShadow.shadowSize = value
             field = value
-            invalidateSelf()
+            update()
         }
 
     private var outerShadow: OuterShadow = OuterShadow(context)
@@ -87,13 +87,13 @@ class NeumorphismDrawable(context: Context) : Drawable() {
 
         outerShadow.centerLayerPath = layerPath
         outerShadow.corner = corner
-        outerShadow.radius = corner.radius
+        outerShadow.radius = radius
         outerShadow.bounds = this.bounds
         outerShadow.shadowSize = shadowSize
 
         innerShadow.centerLayerPath = layerPath
         innerShadow.corner = corner
-        innerShadow.radius = corner.radius
+        innerShadow.radius = radius
         innerShadow.bounds = this.bounds
         innerShadow.shadowSize = shadowSize
         invalidateSelf()
@@ -101,8 +101,8 @@ class NeumorphismDrawable(context: Context) : Drawable() {
 
     private fun getCornerRadius(): Float {
         return min(
-                bounds.width() / corner.radius,
-                bounds.height() / corner.radius
+                bounds.width() / radius,
+                bounds.height() / radius
         )
     }
 

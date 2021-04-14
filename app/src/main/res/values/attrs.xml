@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="neumorphism_state" format="enum">
+        <enum name="up" value="0" />
+        <enum name="none" value="1" />
+        <enum name="down" value="2" />
+    </attr>
+    <attr name="neumorphism_corner" format="enum">
+        <enum name="rounded" value="0" />
+        <enum name="circle" value="1" />
+    </attr>
+    <attr name="neumorphism_corner_radius" format="dimension" />
+
+    <attr name="neumorphismConstraintLayoutStyle" format="reference" />
+    <declare-styleable name="NeumorphismConstraintLayout">
+        <attr name="neumorphism_state" />
+        <attr name="neumorphism_corner" />
+        <attr name="neumorphism_corner_radius" />
+    </declare-styleable>
+</resources>
