@@ -15,6 +15,12 @@ class BrightAndKelvinTouchpad(
     attrs: AttributeSet? = null
 ) : View(context, attrs) {
 
+    interface OnValueChangeListener {
+        fun onBrightChange(bright: Float)
+        fun onKelvinChange(kelvin: Float)
+    }
+
+    var onValueChangeListener: OnValueChangeListener? = null
     var bright = 0.6f
     var kelvin = 0.4f
     var radius = 10f
@@ -68,6 +74,11 @@ class BrightAndKelvinTouchpad(
 
                 bright = x/bounds.width()
                 kelvin = 1 - y/bounds.height()
+
+                onValueChangeListener?.let {
+                    it.onBrightChange(bright)
+                    it.onKelvinChange(kelvin)
+                }
                 invalidate()
             }
         }
