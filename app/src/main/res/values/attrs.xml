@@ -18,6 +18,10 @@
         <attr name="neumorphism_corner_radius" />
     </declare-styleable>
 
+    <declare-styleable name="NeumorphismImageButton">
+        <attr name="neumorphism_corner" />
+        <attr name="neumorphism_corner_radius" />
+    </declare-styleable>
 
     <attr name="touchpad_corner_radius" format="dimension" />
     <attr name="touchpad_color" format="color" />
